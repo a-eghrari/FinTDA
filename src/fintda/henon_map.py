@@ -1,5 +1,5 @@
 """
-Docstring for fintda.henon_map
+Docstring for FinTDA.henon_map
 
     Generating stochastic time series using the Henon map, a discrete-time dynamical system that exhibits chaotic behavior. The Henon map is defined by the equations:
     x_{n+1} = 1 - a_n * x_n^2 + b * y_n + sigma * W_n sqrt(delta_t)
