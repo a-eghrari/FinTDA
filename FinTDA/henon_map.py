@@ -29,7 +29,9 @@ class HenonMap:
     def reset_cache(self):
         self._cache = None
 
-    def generate_time_series(self, initial_conditions=(0.0, 0.0), n_steps=100, use_cache=True):
+    def generate_time_series(
+        self, initial_conditions=(0.0, 0.0), n_steps=100, use_cache=True
+    ):
         if n_steps <= 0:
             return np.array([]), np.array([]), np.array([])
 
@@ -56,9 +58,14 @@ class HenonMap:
 
         for n in range(start_idx, n_steps):
             W_n = self._rng.normal(0, 1)  # Standard normal random variable
-            x[n] = 1 - a_values[n-1] * x[n-1]**2 + self.b * y[n-1] + self.sigma * W_n * np.sqrt(self.delta_t)
-            y[n] = x[n] + self.sigma * W_n * np.sqrt(self.delta_t)
-            a_values[n] = a_values[n-1] + self.delta_t
+            x[n] = (
+                1
+                - a_values[n - 1] * x[n - 1] ** 2
+                + self.b * y[n - 1]
+                + self.sigma * W_n * np.sqrt(self.delta_t)
+            )
+            y[n] = x[n - 1] + self.sigma * W_n * np.sqrt(self.delta_t)
+            a_values[n] = a_values[n - 1] + self.delta_t
 
         if use_cache:
             self._cache = (x, y, a_values, n_steps)
