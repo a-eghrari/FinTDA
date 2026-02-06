@@ -4,7 +4,7 @@ Docstring for FinTDA.henon_map
     Generating stochastic time series using the Henon map, a discrete-time dynamical system that exhibits chaotic behavior. The Henon map is defined by the equations:
     x_{n+1} = 1 - a_n * x_n^2 + b * y_n + sigma * W_n sqrt(delta_t)
     y_{n+1} = x_n+1 + sigma * W_n sqrt(delta_t)
-    a_n+1 = a_n + sqrt(delta_t)
+    a_n+1 = a_n + delta_t
 
     where
     - W_n is a standard normal random variable (Gaussian noise),
@@ -58,7 +58,7 @@ class HenonMap:
             W_n = self._rng.normal(0, 1)  # Standard normal random variable
             x[n] = 1 - a_values[n-1] * x[n-1]**2 + self.b * y[n-1] + self.sigma * W_n * np.sqrt(self.delta_t)
             y[n] = x[n] + self.sigma * W_n * np.sqrt(self.delta_t)
-            a_values[n] = a_values[n-1] + np.sqrt(self.delta_t)
+            a_values[n] = a_values[n-1] + self.delta_t
 
         if use_cache:
             self._cache = (x, y, a_values, n_steps)
