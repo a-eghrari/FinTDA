@@ -5,23 +5,31 @@ Docstring for fintda.henon_map
     x_{n+1} = 1 - a_n * x_n^2 + b * y_n + sigma * W_n sqrt(delta_t)
     y_{n+1} = x_n+1 + sigma * W_n sqrt(delta_t)
     a_n+1 = a_n + sqrt(delta_t)
+
+    where
+    - W_n is a standard normal random variable (Gaussian noise),
+    - a_n is a time-varying parameter that evolves linearly with time,
+    - b is a constant parameter,
+    - sigma controls the noise intensity (positive value),
+    - delta_t is the time step size (positive value).
 """
 
 import numpy as np
 
 
 class HenonMap:
-    def __init__(self, a0=1.4, b=0.3, sigma=0.01, delta_t=0.01):
-        self.a = a0
+    def __init__(self, a_0=0.0, b=0.3, sigma=0.1, delta_t=0.01, seed=None):
+        self.a_0 = a_0
         self.b = b
         self.sigma = sigma
         self.delta_t = delta_t
+        self._rng = np.random.default_rng(seed)
         self._cache = None
 
     def reset_cache(self):
         self._cache = None
 
-    def generate_time_series(self, initial_conditions=(0.0, 0.0), n_steps=1000, use_cache=True):
+    def generate_time_series(self, initial_conditions=(0.0, 0.0), n_steps=100, use_cache=True):
         if n_steps <= 0:
             return np.array([]), np.array([]), np.array([])
 
@@ -33,7 +41,7 @@ class HenonMap:
             # Initial conditions
             x[0] = initial_conditions[0]
             y[0] = initial_conditions[1]
-            a_values[0] = self.a
+            a_values[0] = self.a_0
 
             start_idx = 1
         else:
@@ -47,7 +55,7 @@ class HenonMap:
             start_idx = cached_steps
 
         for n in range(start_idx, n_steps):
-            W_n = np.random.normal(0, 1)  # Standard normal random variable
+            W_n = self._rng.normal(0, 1)  # Standard normal random variable
             x[n] = 1 - a_values[n-1] * x[n-1]**2 + self.b * y[n-1] + self.sigma * W_n * np.sqrt(self.delta_t)
             y[n] = x[n] + self.sigma * W_n * np.sqrt(self.delta_t)
             a_values[n] = a_values[n-1] + np.sqrt(self.delta_t)
